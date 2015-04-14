@@ -166,6 +166,12 @@
   <ItemGroup>
     <Content Include="README.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ExternalDLL\ExternalDLL\ExternalDLL.vcxproj">
+      <Project>{e562103b-c7f3-4bd5-831a-28e27252736a}</Project>
+      <Name>ExternalDLL</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
