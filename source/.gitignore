@@ -20,3 +20,9 @@ ExternalDLL/Debug/
 *.opensdf
 ExternalDLL/ExternalDLL/Release/
 ExternalDLL/Release/
+
+Release/
+Debug/
+Test/
+bin/
+obj/
