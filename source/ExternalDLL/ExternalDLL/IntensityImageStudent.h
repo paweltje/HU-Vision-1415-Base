@@ -23,5 +23,5 @@ public:
 	Intensity getPixel(int i) const;
 
 private:
-	Intensity *imageMap;
+	Intensity * pixelMap;
 };

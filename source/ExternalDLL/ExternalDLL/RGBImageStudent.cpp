@@ -1,88 +1,80 @@
 #include "RGBImageStudent.h"
+#include <cstring>
 
-RGBImageStudent::RGBImageStudent() : RGBImage() {
+RGBImageStudent::RGBImageStudent() : RGBImage(), pixelMap(nullptr) {
+	
 }
 
-RGBImageStudent::RGBImageStudent(const RGBImageStudent &other) : RGBImage(other.getWidth(), other.getHeight()) {
-	int imageSize =other.getHeight() * other.getWidth();
-	imageStorage = new RGB [imageSize];
-	for (int i = 0; i <= imageSize; i++){
-		imageStorage[i] = other.getPixel(i);
+RGBImageStudent::RGBImageStudent(const RGBImageStudent &other) : RGBImage(other.getWidth(), other.getHeight()), pixelMap(nullptr) {
+	const int size = other.getWidth() * other.getHeight();
+	if(size > 0) {
+		pixelMap = new RGB[size];
+		std::memcpy(pixelMap, other.pixelMap, sizeof(RGB) * size);
 	}
-
 }
 
-RGBImageStudent::RGBImageStudent(const int width, const int height) : RGBImage(width, height) {
-
-	if (width > 0 && height > 0){
-		int imageSize = width * height;
-		imageStorage = new RGB[imageSize];
-		for (int i = 0; i <= imageSize; i++){
-			imageStorage[i] = 0;
-		}
+RGBImageStudent::RGBImageStudent(const int width, const int height) : RGBImage(width, height), pixelMap(nullptr) {
+	const int size = width * height;
+	if(size > 0) {
+		pixelMap = new RGB[size](); //With () will init heap on 0
 	}
 }
 
 RGBImageStudent::~RGBImageStudent() {
-	delete imageStorage;
+	delete pixelMap;
 }
 
 void RGBImageStudent::set(const int width, const int height) {
-	int oldWidth = getWidth();
-	int oldHeight = getHeight();
+	const int oldSize = getWidth() * getHeight(), newSize = width * height;
 	RGBImage::set(width, height);
-	if (oldHeight == height && oldWidth == width){
-		int imageSize = height * width;
-		for (int i = 0; i <= imageSize; i++){
-			imageStorage[i] = 0;
-		}
-	}
-	else{
-		delete imageStorage;
-		int imageSize = height * width;
-		imageStorage = new RGB[imageSize];
-		for (int i = 0; i <= imageSize; i++){
-			imageStorage[i] = 0;
+	
+	if(oldSize == newSize && pixelMap != nullptr) {
+		std::memset(pixelMap, 0, sizeof(RGB) * newSize);
+	} else {
+		delete pixelMap;
+		if(newSize > 0) {
+			pixelMap = new RGB[newSize]();
+		} else {
+			pixelMap = nullptr;
 		}
 	}
 }
 
 void RGBImageStudent::set(const RGBImageStudent &other) {
-	int oldWidth = getWidth();
-	int oldHeight = getHeight();
+	const int oldSize = getWidth() * getHeight(), newSize = other.getWidth() * other.getHeight();
 	RGBImage::set(other.getWidth(), other.getHeight());
-	int imageSize = getHeight() * getWidth();
-	if (oldWidth == getHeight() && oldHeight == getHeight()){
-		for (int i = 0; i <= imageSize; i++){
-			imageStorage[i] = other.getPixel(i);
+	
+	if(oldSize == newSize && pixelMap != nullptr) {
+		std::memcpy(pixelMap, other.pixelMap, sizeof(RGB) * newSize);
+	} else {
+		delete pixelMap;
+		if(newSize > 0) {
+			pixelMap = new RGB[newSize];
+			std::memcpy(pixelMap, other.pixelMap, sizeof(RGB) * newSize);
+		} else {
+			pixelMap = nullptr;
 		}
 	}
-	else{
-		delete imageStorage;
-		imageStorage = new RGB[imageSize];
-		for (int i = 0; i <= imageSize; i++){
-			imageStorage[i] = other.getPixel(i);
-		}
-	}
-
 }
 
 void RGBImageStudent::setPixel(int x, int y, RGB pixel) {
-	
-	int pix = getWidth() * y + x;
-	imageStorage[pix] = pixel;
-
+	setPixel(x + y * getWidth(), pixel);
 }
 
 void RGBImageStudent::setPixel(int i, RGB pixel) {
-	imageStorage[i] = pixel;
+	if(i >= 0 && i < getWidth() * getHeight() && pixelMap != nullptr) {
+		pixelMap[i] = pixel;
+	}
 }
 
 RGB RGBImageStudent::getPixel(int x, int y) const {
-	int pix = getWidth() * y + x;
-	return imageStorage[pix];
+	return getPixel(x + y * getWidth());
 }
 
 RGB RGBImageStudent::getPixel(int i) const {
-	return imageStorage[i];
+	if(i >= 0 && i < getWidth() * getHeight() && pixelMap != nullptr) {
+		return pixelMap[i];
+	} else {
+		return 0;
+	}
 }
