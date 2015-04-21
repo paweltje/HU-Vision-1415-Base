@@ -1,5 +1,6 @@
 #include "StudentLocalization.h"
 #include "IntensityImageStudent.h"
+#include <math.h>
 
 bool StudentLocalization::stepFindHead(const IntensityImage &image, FeatureMap &features) const {
 	return false;
@@ -32,13 +33,17 @@ bool StudentLocalization::stepFindExactEyes(const IntensityImage &image, Feature
 
 	Point2D<double> HeadCenter((headMostLeftPoint.x + headMostRightPoint.x) / 2, (headTopPoint.y + headBottomPoint.y) / 2);
 
+	std::cout << "Finding center X: " << headMostLeftPoint.x << " <> " << headMostRightPoint.x << " = " << HeadCenter.x << " Y: " << headTopPoint.y << " <> " << headBottomPoint.y << " = " << HeadCenter.y << std::endl;
+
 	Point2D<double> noseMostLeftPoint = features.getFeature(Feature::FEATURE_NOSE_END_LEFT).getPoints()[0];
 	Point2D<double> noseMostRightPoint = features.getFeature(Feature::FEATURE_NOSE_END_RIGHT).getPoints()[0];
+
+	double highestNoseHight = noseMostLeftPoint.y < noseMostRightPoint.y ? noseMostLeftPoint.y : noseMostRightPoint.y;
 
 	int ystart = 0; //eye start hight
 	int yend = 0;   //eye end	hight
 
-	for(int y = HeadCenter.y - minimalSearchErea; y < HeadCenter.y + minimalSearchErea || yend == 0; y++) { //each row in minimal search area or if no eye found extended
+	for(int y = HeadCenter.y - minimalSearchErea; y < highestNoseHight; y++) { //each row in minimal search area or if no eye found extended
 		int blackCount = 0;
 		for(int x = headMostLeftPoint.x; x < headMostRightPoint.x; x++) { //search row
 			if(image.getPixel(x, y) < 128) blackCount++;				  //if black increment counter
@@ -48,7 +53,7 @@ bool StudentLocalization::stepFindExactEyes(const IntensityImage &image, Feature
 			ystart = y;
 		if(blackCount < maximalBlackCountSkin && ystart != 0 && yend == 0)//Less black in row then maximalBlackCountSkin and started and not ended yet
 			yend = y;
-		if(blackCount > minimalBlackCountEye && yend != 0 && yend - ystart < minimalEyeHeight) { //More black in row then minimalBlackCountEye and the previeuwes known "eye" is properly a eyebrow
+		if(blackCount > minimalBlackCountEye && yend != 0 /*&& yend - ystart < minimalEyeHeight*/) { //More black in row then minimalBlackCountEye and the previeuwes known "eye" is properly a eyebrow
 			ystart = y;
 			yend = 0;
 		}
