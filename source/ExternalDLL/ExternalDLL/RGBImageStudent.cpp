@@ -58,23 +58,47 @@ void RGBImageStudent::set(const RGBImageStudent &other) {
 }
 
 void RGBImageStudent::setPixel(int x, int y, RGB pixel) {
-	setPixel(x + y * getWidth(), pixel);
-}
-
-void RGBImageStudent::setPixel(int i, RGB pixel) {
+	int i = x + y * getWidth();
+#ifdef _DEBUG
 	if(i >= 0 && i < getWidth() * getHeight() && pixelMap != nullptr) {
 		pixelMap[i] = pixel;
 	}
+#else
+	pixelMap[i] = pixel;
+#endif
+}
+
+void RGBImageStudent::setPixel(int i, RGB pixel) {
+#ifdef _DEBUG
+	if(i >= 0 && i < getWidth() * getHeight() && pixelMap != nullptr) {
+		pixelMap[i] = pixel;
+	}
+#else
+	pixelMap[i] = pixel;
+#endif
 }
 
 RGB RGBImageStudent::getPixel(int x, int y) const {
-	return getPixel(x + y * getWidth());
-}
-
-RGB RGBImageStudent::getPixel(int i) const {
+	int i = x + y * getWidth();
+#ifdef _DEBUG
 	if(i >= 0 && i < getWidth() * getHeight() && pixelMap != nullptr) {
 		return pixelMap[i];
 	} else {
 		return 0;
 	}
+#else
+	return pixelMap[i];
+#endif
+}
+
+RGB RGBImageStudent::getPixel(int i) const {
+#ifdef _DEBUG
+	if(i >= 0 && i < getWidth() * getHeight() && pixelMap != nullptr) {
+		return pixelMap[i];
+	} else {
+		return 0;
+	}
+#else
+	return pixelMap[i];
+#endif
 }

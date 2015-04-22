@@ -59,23 +59,47 @@ void IntensityImageStudent::set(const IntensityImageStudent &other) {
 }
 
 void IntensityImageStudent::setPixel(int x, int y, Intensity pixel) {
-	setPixel(x + y * getWidth(), pixel);
-}
-
-void IntensityImageStudent::setPixel(int i, Intensity pixel) {
+	int i = x + y * getWidth();
+#ifdef _DEBUG
 	if(i >= 0 && i < getWidth() * getHeight() && pixelMap != nullptr) {
 		pixelMap[i] = pixel;
 	}
+#else
+	pixelMap[i] = pixel;
+#endif
+}
+
+void IntensityImageStudent::setPixel(int i, Intensity pixel) {
+#ifdef _DEBUG
+	if(i >= 0 && i < getWidth() * getHeight() && pixelMap != nullptr) {
+		pixelMap[i] = pixel;
+	}
+#else
+	pixelMap[i] = pixel;
+#endif
 }
 
 Intensity IntensityImageStudent::getPixel(int x, int y) const {
-	return getPixel(x + y * getWidth());
-}
-
-Intensity IntensityImageStudent::getPixel(int i) const {
+	int i = x + y * getWidth();
+#ifdef _DEBUG
 	if(i >= 0 && i < getWidth() * getHeight() && pixelMap != nullptr) {
 		return pixelMap[i];
 	} else {
 		return 0;
 	}
+#else
+	return pixelMap[i];
+#endif
+}
+
+Intensity IntensityImageStudent::getPixel(int i) const {
+#ifdef _DEBUG
+	if(i >= 0 && i < getWidth() * getHeight() && pixelMap != nullptr) {
+		return pixelMap[i];
+	} else {
+		return 0;
+	}
+#else
+	return pixelMap[i];
+#endif
 }
