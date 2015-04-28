@@ -15,7 +15,7 @@ void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
 bool executeSteps(DLLExecution * executor);
 
 int main(int argc, char * argv[]) {
-	//BaseTimer bt;
+	BaseTimer bt;
 
 
 	ImageFactory::setImplementation(ImageFactory::DEFAULT);
