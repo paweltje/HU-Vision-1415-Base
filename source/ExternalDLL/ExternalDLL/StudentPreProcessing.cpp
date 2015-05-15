@@ -57,7 +57,7 @@ Intensity calc9(const int matrix[9][9], int ** data) {
 	return total;
 }
 
-//#define MATRIX7
+#define MATRIX7
 
 IntensityImage * StudentPreProcessing::stepEdgeDetection(const IntensityImage &image) const {
 #ifdef MATRIX7
