@@ -58,6 +58,29 @@ bool StudentLocalization::stepFindExactEyes(const IntensityImage &image, Feature
 			yend = 0;
 		}
 	}
+	
+	IntensityImageStudent * returner = new IntensityImageStudent();
+	returner->set(image);
+	for (int x = noseMostLeftPoint.x - 10; x < noseMostLeftPoint.x; x++){
+		for (int y = ystart; y < yend; y++){
+			if (image.getPixel(x, y) == 1){
+				returner->setPixel(x - 1, y, 1);
+				returner->setPixel(x + 1, y, 1);
+				returner->setPixel(x, y + 1, 1);
+				returner->setPixel(x, y - 1, 1);
+			}
+		}
+	}
+	for (int x = noseMostRightPoint.x; x < noseMostRightPoint.x + 10; x++){
+		for (int y = ystart; y < yend; y++){
+			if (image.getPixel(x, y) == 1){
+				returner->setPixel(x - 1, y, 1);
+				returner->setPixel(x + 1, y, 1);
+				returner->setPixel(x, y + 1, 1);
+				returner->setPixel(x, y - 1, 1);
+			}
+		}
+	}
 
 	std::cout << std::endl << ystart << ' ' << yend << std::endl;
 

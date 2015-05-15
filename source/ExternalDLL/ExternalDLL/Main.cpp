@@ -20,7 +20,8 @@ int main(int argc, char * argv[]) {
 
 	ImageFactory::setImplementation(ImageFactory::STUDENT);
 	RGBImageStudent * image = new RGBImageStudent();
-	if(!ImageIO::loadImage("C:\\Users\\Wibren\\Documents\\GitHub\\Vision-Pawel-Wibren\\testsets\\Set A\\TestSet Images\\child-1.png", *image)) {
+	//if(!ImageIO::loadImage("C:\\Users\\Wibren\\Documents\\GitHub\\Vision-Pawel-Wibren\\testsets\\Set A\\TestSet Images\\child-1.png", *image)) {
+	if (!ImageIO::loadImage("C:\\Users\\Pawel\\Documents\\GitHub\\Vision-Pawel-Wibren\\testsets\\Set A\\TestSet Images\\child-1.png", *image)){
 		std::cout << "Image could not be loaded!" << std::endl;
 		system("pause");
 		return 1;
