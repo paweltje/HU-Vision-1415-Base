@@ -13,6 +13,20 @@ IntensityImageStudent::IntensityImageStudent(const IntensityImageStudent &other)
 	}
 }
 
+IntensityImageStudent::IntensityImageStudent(const IntensityImage &other) : IntensityImage(other.getWidth(), other.getHeight()), pixelMap(nullptr) {
+	const int size = other.getWidth() * other.getHeight();
+	if(size > 0) {
+		pixelMap = new Intensity[size];
+		for(int i = 0; i < size; i++) {
+			pixelMap[i] = other.getPixel(i);
+		}
+	} else {
+		pixelMap = nullptr;
+	}
+}
+
+
+
 IntensityImageStudent::IntensityImageStudent(const int width, const int height) : IntensityImage(width, height), pixelMap(nullptr) {
 	const int size = width * height;
 	if(width > 0 && height > 0) {
@@ -52,6 +66,27 @@ void IntensityImageStudent::set(const IntensityImageStudent &other) {
 		if(newSize > 0) {
 			pixelMap = new Intensity[newSize];
 			std::memcpy(pixelMap, other.pixelMap, sizeof(Intensity) * newSize);
+		} else {
+			pixelMap = nullptr;
+		}
+	}
+}
+
+void IntensityImageStudent::set(const IntensityImage &other) {
+	const int oldSize = getWidth() * getHeight(), newSize = other.getWidth() * other.getHeight();
+	IntensityImage::set(other.getWidth(), other.getHeight());
+
+	if(oldSize == newSize && pixelMap != nullptr) {
+		for(int i = 0; i < newSize; i++) {
+			pixelMap[i] = other.getPixel(i);
+		}
+	} else {
+		delete pixelMap;
+		if(newSize > 0) {
+			pixelMap = new Intensity[newSize];
+			for(int i = 0; i < newSize; i++) {
+				pixelMap[i] = other.getPixel(i);
+			}
 		} else {
 			pixelMap = nullptr;
 		}
