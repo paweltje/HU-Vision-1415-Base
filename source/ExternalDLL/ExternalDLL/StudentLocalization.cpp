@@ -48,7 +48,7 @@ bool StudentLocalization::stepFindExactEyes(const IntensityImage &image, Feature
 		for(int x = headMostLeftPoint.x; x < headMostRightPoint.x; x++) { //search row
 			if(image.getPixel(x, y) < 128) blackCount++;				  //if black increment counter
 		}
-		std::cout << y << ": " << blackCount << ", ";
+		//::cout << y << ": " << blackCount << ", ";
 		if(blackCount > minimalBlackCountEye && ystart == 0)		      //More black in row then minimalBlackCountEye and no start setted yet
 			ystart = y;
 		if(blackCount < maximalBlackCountSkin && ystart != 0 && yend == 0)//Less black in row then maximalBlackCountSkin and started and not ended yet
@@ -58,14 +58,14 @@ bool StudentLocalization::stepFindExactEyes(const IntensityImage &image, Feature
 			yend = 0;
 		}
 	}
-	int headmiddle = headMostRightPoint.x - headMostLeftPoint.y;
+	int headmiddle = (headMostRightPoint.x + headMostLeftPoint.x) / 2;
 	std::cout <<"This is head middle: " <<  headmiddle << std::endl;
 	int blackCount = 0;
 	int xstartleft = 0;
 	int xendleft = 0;
 	int xstartright = 0;
 	int xendright = 0;
-	for (int x = noseMostLeftPoint.getX() - 5; x >= headmiddle; x++){
+	for (int x = noseMostLeftPoint.getX() - 5; x < headmiddle; x++){
 		blackCount = 0;
 		for (int y = ystart; y < yend; y++){
 			if (image.getPixel(x, y) == 0){
