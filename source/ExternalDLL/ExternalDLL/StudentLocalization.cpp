@@ -58,6 +58,63 @@ bool StudentLocalization::stepFindExactEyes(const IntensityImage &image, Feature
 			yend = 0;
 		}
 	}
+	int headmiddle = headMostRightPoint.x - headMostLeftPoint.y;
+	std::cout <<"This is head middle: " <<  headmiddle << std::endl;
+	int blackCount = 0;
+	int xstartleft = 0;
+	int xendleft = 0;
+	int xstartright = 0;
+	int xendright = 0;
+	for (int x = noseMostLeftPoint.getX() - 5; x >= headmiddle; x++){
+		blackCount = 0;
+		for (int y = ystart; y < yend; y++){
+			if (image.getPixel(x, y) == 0){
+				blackCount++;
+			}
+		}
+		if (blackCount == 0){
+			xendleft = x;
+			break;
+		}
+	}
+	for (int x = noseMostLeftPoint.getX() - 5; x >= headMostLeftPoint.x; x--){
+		blackCount = 0;
+		for (int y = ystart; y < yend; y++){
+			if (image.getPixel(x, y) == 0){
+				blackCount++;
+			}
+		}	
+		if (blackCount == 0){
+			xstartleft = x;
+			break;
+		}
+	}
+	for (int x = noseMostRightPoint.getX() + 5; x < headMostRightPoint.x; x++){
+		blackCount = 0;
+		for (int y = ystart; y < yend; y++){
+			if (image.getPixel(x,y) == 0){
+				blackCount++;
+			}
+		}
+		if (blackCount == 0){
+			xendright = x;
+			break;
+		}
+	}
+	for (int x = noseMostRightPoint.getX() + 5; x > headmiddle; x--){
+		blackCount = 0;
+		for (int y = ystart; y < yend; y++){
+			if (image.getPixel(x, y) == 0){
+				blackCount++;
+			}
+		}
+		if (blackCount == 0){
+			xstartright = x;
+			break;
+		}
+	}
+
+	
 	
 	IntensityImageStudent * returner = new IntensityImageStudent();
 	returner->set(image);
@@ -85,12 +142,13 @@ bool StudentLocalization::stepFindExactEyes(const IntensityImage &image, Feature
 	std::cout << std::endl << ystart << ' ' << yend << std::endl;
 
 	Feature leftEyeRect(Feature::FEATURE_EYE_LEFT_RECT);
-	leftEyeRect.addPoint(Point2D<double>(noseMostLeftPoint.x, ystart));
-	leftEyeRect.addPoint(Point2D<double>(noseMostLeftPoint.x - 10, yend));
+	leftEyeRect.addPoint(Point2D<double>(xendleft, ystart));
+	leftEyeRect.addPoint(Point2D<double>(xstartleft, yend));
 
 	Feature rightEyeRect(Feature::FEATURE_EYE_RIGHT_RECT);
-	rightEyeRect.addPoint(Point2D<double>(noseMostRightPoint.x, ystart));
-	rightEyeRect.addPoint(Point2D<double>(noseMostRightPoint.x + 10, yend));
+	rightEyeRect.addPoint(Point2D<double>(xstartright, ystart));
+	rightEyeRect.addPoint(Point2D<double>(xendright, yend));
+
 
 	features.putFeature(leftEyeRect);
 	features.putFeature(rightEyeRect);
