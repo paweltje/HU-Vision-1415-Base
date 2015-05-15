@@ -26,7 +26,6 @@ Intensity calc7(const int matrix[7][7], int ** data) {
 		for(int y = 0; y < size; y++) {
 			total += matrix[x][y] * data[x][y];
 		}
-		//std::cout << (int)total << " ";
 	}
 
 	if(total > 127) {
@@ -36,8 +35,6 @@ Intensity calc7(const int matrix[7][7], int ** data) {
 	} else {
 		return static_cast<Intensity>(total + 127);
 	}
-
-	//std::cout << std::endl << (int)total << std::endl;
 	return total;
 }
 
@@ -48,7 +45,6 @@ Intensity calc9(const int matrix[9][9], int ** data) {
 		for(int y = 0; y < size; y++) {
 			total += matrix[x][y] * data[x][y];
 		}
-		//std::cout << (int)total << " ";
 	}
 
 	if(total > 127) {
@@ -58,29 +54,25 @@ Intensity calc9(const int matrix[9][9], int ** data) {
 	} else {
 		return static_cast<Intensity>(total + 127);
 	}
-
-	//std::cout << std::endl << (int)total << std::endl;
 	return total;
 }
 
+//#define MATRIX7
+
 IntensityImage * StudentPreProcessing::stepEdgeDetection(const IntensityImage &image) const {
-	std::cout << std::endl << std::endl;
-	std::cout << "=========Step Edge Detection=========" << std::endl;
-	std::cout << "===============Wibren================" << std::endl;
+#ifdef MATRIX7
+	const int matrixSize = 7;
+	const int halfMatrixSize = 3;
 
-#ifdef 7MATRIX
-	//const int matrixSize = 7;
-	//const int halfMatrixSize = 3;
-
-	//const int matrix[matrixSize][matrixSize] = {
-	//	{0 ,  0, -1, -2, -1,  0,  0},
-	//	{0 , -2, -3, -4, -3, -2,  0},
-	//	{-1, -3,  1,  9,  1, -3, -1},
-	//	{-2, -2,  9, 22,  9, -4, -2},
-	//	{-1, -3,  1,  9,  1, -3, -1},
-	//	{ 0, -2, -3, -4, -3, -2,  0},
-	//	{ 0,  0, -1, -2, -1,  0,  0}
-	//};
+	const int matrix[matrixSize][matrixSize] = {
+		{0 ,  0, -1, -2, -1,  0,  0},
+		{0 , -2, -3, -4, -3, -2,  0},
+		{-1, -3,  1,  9,  1, -3, -1},
+		{-2, -2,  9, 22,  9, -4, -2},
+		{-1, -3,  1,  9,  1, -3, -1},
+		{ 0, -2, -3, -4, -3, -2,  0},
+		{ 0,  0, -1, -2, -1,  0,  0}
+	};
 #else
 	const int matrixSize = 9;
 	const int halfMatrixSize = 4;
@@ -127,7 +119,7 @@ IntensityImage * StudentPreProcessing::stepEdgeDetection(const IntensityImage &i
 				if(y < halfMatrixSize || y > image.getHeight() - halfMatrixSize) {
 					returner->setPixel(x, y, 0);
 				} else {
-#ifdef 7MATRIX
+#ifdef MATRIX7
 					returner->setPixel(x, y, ~calc7(matrix, data));
 #else
 					returner->setPixel(x, y, ~calc9(matrix, data));
@@ -152,7 +144,7 @@ IntensityImage * StudentPreProcessing::stepEdgeDetection(const IntensityImage &i
 IntensityImage * StudentPreProcessing::stepThresholding(const IntensityImage &image) const {
 	const int T = 245;
 
-#ifdef 7MATRIX
+#ifdef MATRIX7
 	const int minBlackNeigboursCount = 5; //7x7 matrix
 #else
 	const int minBlackNeigboursCount = 9; //9x9 matrix
@@ -171,7 +163,7 @@ IntensityImage * StudentPreProcessing::stepThresholding(const IntensityImage &im
 	}
 
 	IntensityImage * step2 = new IntensityImageStudent(*step1);
-#ifdef STOPTHRESHOLDING
+#ifndef STOPTHRESHOLDING
 	for(int x = 2; x < image.getWidth() - 2; x++) {
 		for(int y = 2; y < image.getHeight() - 2; y++) {
 			if(step1->getPixel(x, y) == 0) {
