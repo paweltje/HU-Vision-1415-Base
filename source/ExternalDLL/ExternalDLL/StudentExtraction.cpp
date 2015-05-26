@@ -2,6 +2,8 @@
 #include "IntensityImageStudent.h"
 
 bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap &features) const {
+	std::cout << "Step Pre!\n";
+
 	const int LeftLeftX = std::fmin(features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[0].getX(), features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[1].getX());
 	const int LeftRightX = std::fmax(features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[0].getX(), features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[1].getX());
 	const int LeftUpY = std::fmin(features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[0].getY(), features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[1].getY());
@@ -26,6 +28,8 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 		return false;
 	}
 
+	std::cout << "Step 1!\n";
+
 	IntensityImage * LeftEyeGrayCopy = new IntensityImageStudent(LeftWidth, LeftHeight);
 	IntensityImage * RightEyeGrayCopy = new IntensityImageStudent(RightWidth, RightHeight);
 
@@ -41,6 +45,8 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 		}
 	}
 
+	std::cout << "Step 2!\n";
+
 	int LeftEyeHistogram[255] = {0};
 	int RightEyeHistogram[255] = {0};
 	
@@ -51,7 +57,9 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 		RightEyeHistogram[RightEyeGrayCopy->getPixel(i)] ++;
 	}
 
-	const float percBlackestPixels = 0.10;
+	std::cout << "Step 3!\n";
+
+	const float percBlackestPixels = 0.10f;
 	int LeftCenterSizeThreshold = 0;
 	int RightCenterSizeThreshold = 0;
 
@@ -75,6 +83,8 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 			break;
 		}
 	}
+
+	std::cout << "Step 4!\n";
 
 	unsigned long int LeftTotalX = 0, LeftTotalY = 0, RightTotalX = 0, RightTotalY = 0;
 
@@ -101,6 +111,8 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 	LeftCenterY = LeftTotalY / LeftCenterSizeThreshold;
 	RightCenterX = RightTotalX / RightCenterSizeThreshold;
 	RightCenterY = RightTotalY / RightCenterSizeThreshold;
+
+	std::cout << "Step 5!\n";
 
 	int LeftEyeStartX, LeftEyeEndX, LeftEyeStartY, LeftEyeEndY, RightEyeStartX, RightEyeEndX, RightEyeStartY, RightEyeEndY;
 	Intensity LeftCenterValue = LeftEyeGrayCopy->getPixel(LeftCenterX, LeftCenterY);
@@ -155,13 +167,37 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 		}
 	}
 
+	std::cout << "Step Final!\n";
 
+	delete LeftEyeGrayCopy;
+	delete RightEyeGrayCopy;
 
-	return false;
+	features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[0].setX(LeftEyeStartX + LeftLeftX);
+	features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[0].setY(LeftEyeStartY + LeftUpY);
+	features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[1].setX(LeftEyeEndX + LeftLeftX);
+	features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[1].setY(LeftEyeEndY + LeftUpY);
+
+	features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[0].setX(RightEyeStartX + RightLeftX);
+	features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[0].setY(RightEyeStartY + RightUpY);
+	features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[1].setX(RightEyeEndX + RightLeftX );
+	features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[1].setY(RightEyeEndY + RightUpY);
+
+	Feature leftCenter(Feature::FEATURE_NOSTRIL_LEFT);
+	leftCenter.addPoint(Point2D<double>(LeftCenterX, LeftCenterY));
+
+	Feature rightCenter(Feature::FEATURE_NOSTRIL_RIGHT);
+	rightCenter.addPoint(Point2D<double>(RightCenterX, RightCenterY));
+
+	features.putFeature(leftCenter);
+	features.putFeature(rightCenter);
+
+	std::cout << "Doei!\n";
+
+	return true;
 }
 
 bool StudentExtraction::stepExtractNose(const IntensityImage &image, FeatureMap &features) const {
-	return false;
+	return true;
 }
 
 bool StudentExtraction::stepExtractMouth(const IntensityImage &image, FeatureMap &features) const {
