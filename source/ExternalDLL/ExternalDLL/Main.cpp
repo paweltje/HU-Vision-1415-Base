@@ -16,69 +16,69 @@ void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
 bool executeSteps(DLLExecution * executor);
 
 int main(int argc, char * argv[]) {
-	BaseTimer bt;
+	//BaseTimer bt;
 
-	ImageFactory::setImplementation(ImageFactory::STUDENT);
-	RGBImageStudent * image = new RGBImageStudent();
-	//if(!ImageIO::loadImage("C:\\Users\\Wibren\\Documents\\GitHub\\Vision-Pawel-Wibren\\testsets\\Set A\\TestSet Images\\child-1.png", *image)) {
-	if (!ImageIO::loadImage("C:\\Users\\Pawel\\Documents\\GitHub\\Vision-Pawel-Wibren\\testsets\\Set A\\TestSet Images\\child-1.png", *image)){
-		std::cout << "Image could not be loaded!" << std::endl;
-		system("pause");
-		return 1;
-	}
-
-	RGBImageStudent * copyImage = new RGBImageStudent();
-
-	for(int i = 0; i < 20; i++) {
-		bt.reset();
-		bt.start();
-		copyImage->set(*image);
-		bt.stop();
-		std::cout << "Image copy time: " << bt.elapsedMicroSeconds() << "\n";
-		copyImage->set(0, 0);
-	}
-
-	delete image;
-	delete copyImage;
-
-	system("pause");
-
-	return 0;
-	
-
-	//ImageFactory::setImplementation(ImageFactory::DEFAULT);
-
-
-	//ImageIO::debugFolder = "D:\\Users\\Rolf\\Downloads\\FaceMinMin";
-	//ImageIO::isInDebugMode = true; //If set to false the ImageIO class will skip any image save function calls
-
-
-
-
-	//RGBImage * input = ImageFactory::newRGBImage();
-	//if (!ImageIO::loadImage("D:\\Users\\Rolf\\Downloads\\TestA5.jpg", *input)) {
+	//ImageFactory::setImplementation(ImageFactory::STUDENT);
+	//RGBImageStudent * image = new RGBImageStudent();
+	////if(!ImageIO::loadImage("C:\\Users\\Wibren\\Documents\\GitHub\\Vision-Pawel-Wibren\\testsets\\Set A\\TestSet Images\\child-1.png", *image)) {
+	//if (!ImageIO::loadImage("C:\\Users\\Pawel\\Documents\\GitHub\\Vision-Pawel-Wibren\\testsets\\Set A\\TestSet Images\\child-1.png", *image)){
 	//	std::cout << "Image could not be loaded!" << std::endl;
 	//	system("pause");
-	//	return 0;
+	//	return 1;
 	//}
 
+	//RGBImageStudent * copyImage = new RGBImageStudent();
 
-	//ImageIO::saveRGBImage(*input, ImageIO::getDebugFileName("debug.png"));
-
-	//DLLExecution * executor = new DLLExecution(input);
-
-
-	//if (executeSteps(executor)) {
-	//	std::cout << "Face recognition successful!" << std::endl;
-	//	std::cout << "Facial parameters: " << std::endl;
-	//	for (int i = 0; i < 16; i++) {
-	//		std::cout << (i+1) << ": " << executor->facialParameters[i] << std::endl;
-	//	}
+	//for(int i = 0; i < 20; i++) {
+	//	bt.reset();
+	//	bt.start();
+	//	copyImage->set(*image);
+	//	bt.stop();
+	//	std::cout << "Image copy time: " << bt.elapsedMicroSeconds() << "\n";
+	//	copyImage->set(0, 0);
 	//}
 
-	//delete executor;
+	//delete image;
+	//delete copyImage;
+
 	//system("pause");
-	//return 1;
+
+	//return 0;
+	
+
+	ImageFactory::setImplementation(ImageFactory::DEFAULT);
+
+
+	ImageIO::debugFolder = "C:\\Users\\Wibren\\Desktop";
+	ImageIO::isInDebugMode = true; //If set to false the ImageIO class will skip any image save function calls
+
+
+
+
+	RGBImage * input = ImageFactory::newRGBImage();
+	if(!ImageIO::loadImage("C:\\Users\\Wibren\\Documents\\GitHub\\Vision-Pawel-Wibren\\testsets\\Set A\\TestSet Images\\female-1.png", *input)) {
+		std::cout << "Image could not be loaded!" << std::endl;
+		system("pause");
+		return 0;
+	}
+
+
+	ImageIO::saveRGBImage(*input, ImageIO::getDebugFileName("debug.png"));
+
+	DLLExecution * executor = new DLLExecution(input);
+
+
+	if (executeSteps(executor)) {
+		std::cout << "Face recognition successful!" << std::endl;
+		std::cout << "Facial parameters: " << std::endl;
+		for (int i = 0; i < 16; i++) {
+			std::cout << (i+1) << ": " << executor->facialParameters[i] << std::endl;
+		}
+	}
+
+	delete executor;
+	system("pause");
+	return 1;
 }
 
 bool executeSteps(DLLExecution * executor) {
@@ -147,8 +147,7 @@ bool executeSteps(DLLExecution * executor) {
 		std::cout << "Extraction preparation failed!" << std::endl;
 		return false;
 	}
-
-	if (!executor->executeExtractionStep1(false)) {
+	if (!executor->executeExtractionStep1(true)) {
 		std::cout << "Extraction step 1 failed!" << std::endl;
 		return false;
 	}

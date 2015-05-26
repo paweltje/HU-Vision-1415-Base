@@ -35,13 +35,13 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 
 	for(int x = LeftLeftX; x < LeftRightX; x++) {
 		for(int y = LeftUpY; y < LeftDownY; y++) {
-			LeftEyeGrayCopy->setPixel(x, y, image.getPixel(x, y));
+			LeftEyeGrayCopy->setPixel(x - LeftLeftX, y - LeftUpY, image.getPixel(x, y));
 		}
 	}
 
 	for(int x = RightLeftX; x < RightRightX; x++) {
 		for(int y = RightUpY; y < RightDownY; y++) {
-			RightEyeGrayCopy->setPixel(x, y, image.getPixel(x, y));
+			RightEyeGrayCopy->setPixel(x - RightLeftX, y - RightUpY, image.getPixel(x, y));
 		}
 	}
 
@@ -182,14 +182,14 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 	features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[1].setX(RightEyeEndX + RightLeftX );
 	features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[1].setY(RightEyeEndY + RightUpY);
 
-	Feature leftCenter(Feature::FEATURE_NOSTRIL_LEFT);
-	leftCenter.addPoint(Point2D<double>(LeftCenterX, LeftCenterY));
+	//Feature leftCenter(Feature::FEATURE_NOSTRIL_LEFT);
+	//leftCenter.addPoint(Point2D<double>(LeftCenterX, LeftCenterY));
 
-	Feature rightCenter(Feature::FEATURE_NOSTRIL_RIGHT);
-	rightCenter.addPoint(Point2D<double>(RightCenterX, RightCenterY));
+	//Feature rightCenter(Feature::FEATURE_NOSTRIL_RIGHT);
+	//rightCenter.addPoint(Point2D<double>(RightCenterX, RightCenterY));
 
-	features.putFeature(leftCenter);
-	features.putFeature(rightCenter);
+	//features.putFeature(leftCenter);
+	//features.putFeature(rightCenter);
 
 	std::cout << "Doei!\n";
 
