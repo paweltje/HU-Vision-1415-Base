@@ -40,6 +40,7 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 			RightEyeGrayCopy->setPixel(x, y, image.getPixel(x, y));
 		}
 	}
+
 	int LeftEyeHistogram[255] = {0};
 	int RightEyeHistogram[255] = {0};
 	
@@ -50,6 +51,56 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 		RightEyeHistogram[RightEyeGrayCopy->getPixel(i)] ++;
 	}
 
+	const float percBlackestPixels = 0.10;
+	int LeftCenterSizeThreshold = 0;
+	int RightCenterSizeThreshold = 0;
+
+	int LeftCenterThreshold = percBlackestPixels * LeftSize;
+	int RightCenterThreshold = percBlackestPixels * RightSize;
+
+	for(int i = 255; i >= 0; i--) {
+		LeftCenterThreshold -= LeftEyeHistogram[i];
+		LeftCenterSizeThreshold += LeftEyeHistogram[i];
+		if(LeftCenterThreshold < 0) {
+			LeftCenterThreshold = i;
+			break;
+		}	
+	}
+
+	for(int i = 255; i >= 0; i--) {
+		RightCenterThreshold -= RightEyeHistogram[i];
+		RightCenterSizeThreshold += RightEyeHistogram[i];
+		if(RightCenterThreshold < 0) {
+			RightCenterThreshold = i;
+			break;
+		}
+	}
+
+	unsigned long int LeftTotalX = 0, LeftTotalY = 0, RightTotalX = 0, RightTotalY = 0;
+
+	for(int x = 0; x < LeftWidth; x++) {
+		for(int y = 0; y < LeftHeight; y++) {
+			if(LeftEyeGrayCopy->getPixel(x, y) >= LeftCenterThreshold) {
+				LeftTotalX += x;
+				LeftTotalY += y;
+			}
+		}
+	}
+
+	for(int x = 0; x < RightWidth; x++) {
+		for(int y = 0; y < RightHeight; y++) {
+			if(RightEyeGrayCopy->getPixel(x, y) >= RightCenterThreshold) {
+				RightTotalX += x;
+				RightTotalY += y;
+			}
+		}
+	}
+
+	int LeftCenterX, LeftCenterY, RightCenterX, RightCenterY;
+	LeftCenterX = LeftTotalX / LeftCenterSizeThreshold;
+	LeftCenterY = LeftTotalY / LeftCenterSizeThreshold;
+	RightCenterX = RightTotalX / RightCenterSizeThreshold;
+	RightCenterY = RightTotalY / RightCenterSizeThreshold;
 
 	return false;
 }
