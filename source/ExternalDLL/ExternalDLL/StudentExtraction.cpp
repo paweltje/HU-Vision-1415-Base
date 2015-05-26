@@ -40,7 +40,15 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 			RightEyeGrayCopy->setPixel(x, y, image.getPixel(x, y));
 		}
 	}
-
+	int LeftEyeHistogram[255] = {0};
+	int RightEyeHistogram[255] = {0};
+	
+	for (int i = 0; i < LeftSize; i++){
+		LeftEyeHistogram[LeftEyeGrayCopy->getPixel(i)] ++;
+	}
+	for (int i = 0; i < RightSize; i++){
+		RightEyeHistogram[RightEyeGrayCopy->getPixel(i)] ++;
+	}
 
 
 	return false;
