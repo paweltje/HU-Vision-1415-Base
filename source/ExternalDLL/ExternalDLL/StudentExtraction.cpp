@@ -102,6 +102,61 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 	RightCenterX = RightTotalX / RightCenterSizeThreshold;
 	RightCenterY = RightTotalY / RightCenterSizeThreshold;
 
+	int LeftEyeStartX, LeftEyeEndX, LeftEyeStartY, LeftEyeEndY, RightEyeStartX, RightEyeEndX, RightEyeStartY, RightEyeEndY;
+	Intensity LeftCenterValue = LeftEyeGrayCopy->getPixel(LeftCenterX, LeftCenterY);
+	Intensity RightCenterValue = RightEyeGrayCopy->getPixel(RightCenterX, RightCenterY);
+	for (int x = LeftCenterX; x >= 0; x--){
+		if (LeftEyeGrayCopy->getPixel(x, LeftCenterY) < LeftCenterValue + 64){
+			LeftEyeStartX = x;
+			break;
+		}
+	}
+	for (int x = LeftCenterX; x < LeftWidth; x++){
+		if (LeftEyeGrayCopy->getPixel(x, LeftCenterY) < LeftCenterValue + 64){
+			LeftEyeEndX = x;
+			break;
+		}
+	}
+	for (int y = LeftCenterY; y >= 0; y--){
+		if (LeftEyeGrayCopy->getPixel(LeftCenterX, y) < LeftCenterValue + 64){
+			LeftEyeStartY = y;
+			break;
+		}
+	}
+	for (int y = LeftCenterY; y < LeftHeight; y++){
+		if (LeftEyeGrayCopy->getPixel(LeftCenterX, y) < LeftCenterValue + 64){
+			LeftEyeEndY = y;
+			break;
+		}
+	}
+
+	for (int x = RightCenterX; x >= 0; x--){
+		if (RightEyeGrayCopy->getPixel(x, RightCenterY) < RightCenterValue + 64){
+			RightEyeStartX = x;
+			break;
+		}
+	}
+	for (int x = RightCenterX; x < RightWidth; x++){
+		if (RightEyeGrayCopy->getPixel(x, RightCenterY) < RightCenterValue + 64){
+			RightEyeEndX = x;
+			break;
+		}
+	}
+	for (int y = RightCenterY; y >= 0; y--){
+		if (RightEyeGrayCopy->getPixel(RightCenterX, y) < RightCenterValue + 64){
+			RightEyeStartY = y;
+			break;
+		}
+	}
+	for (int y = RightCenterY; y < RightHeight; y++){
+		if (RightEyeGrayCopy->getPixel(RightCenterX, y) < RightCenterValue + 64){
+			RightEyeEndY = y;
+			break;
+		}
+	}
+
+
+
 	return false;
 }
 
