@@ -1,6 +1,8 @@
 #include "StudentExtraction.h"
 #include "IntensityImageStudent.h"
 
+#include "ImageIO.h"
+
 bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap &features) const {
 	std::cout << "Step Pre!\n";
 
@@ -28,6 +30,10 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 		return false;
 	}
 
+	ImageIO::isInDebugMode = true;
+	ImageIO::saveIntensityImage(image, "C:\\Users\\Wibren\\Desktop\\temp.png");
+	ImageIO::isInDebugMode = false;
+
 	std::cout << "Step 1!\n";
 
 	IntensityImage * LeftEyeGrayCopy = new IntensityImageStudent(LeftWidth, LeftHeight);
@@ -48,13 +54,27 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 	std::cout << "Step 2!\n";
 
 	int LeftEyeHistogram[256] = {0};
+
+	for(int i = 0; i < 255; i++) {
+		LeftEyeHistogram[i] = 0;
+	}
+
 	int RightEyeHistogram[256] = {0};
 	
 	for (int i = 0; i < LeftSize; i++){
-		LeftEyeHistogram[LeftEyeGrayCopy->getPixel(i)] ++;
+		LeftEyeHistogram[LeftEyeGrayCopy->getPixel(i)]++;
 	}
 	for (int i = 0; i < RightSize; i++){
 		RightEyeHistogram[RightEyeGrayCopy->getPixel(i)] ++;
+	}
+
+	int check = LeftSize;
+	for(int i = 0; i < 256; i++) {
+		std::cout << "Check: " << check << "\n";
+		check -= LeftEyeHistogram[i];
+	}
+	if(check != 0) {
+		std::cout << "Problems " << check << "\n";
 	}
 
 	std::cout << "Step 3!\n";
@@ -66,11 +86,16 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 	int LeftCenterThreshold = percBlackestPixels * LeftSize;
 	int RightCenterThreshold = percBlackestPixels * RightSize;
 
+	std::cout << "LCT: " << LeftCenterThreshold << "\n";
+
 	for(int i = 255; i >= 0; i--) {
 		LeftCenterThreshold -= LeftEyeHistogram[i];
+		std::cout << "LCT: " << LeftCenterThreshold << "\n";
 		LeftCenterSizeThreshold += LeftEyeHistogram[i];
+		std::cout << "LCS: " << LeftCenterSizeThreshold << "\n";
 		if(LeftCenterThreshold < 0) {
 			LeftCenterThreshold = i;
+			std::cout << "Left Threshold" << i << "\n";
 			break;
 		}	
 	}
@@ -80,6 +105,7 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 		RightCenterSizeThreshold += RightEyeHistogram[i];
 		if(RightCenterThreshold < 0) {
 			RightCenterThreshold = i;
+			std::cout << "Right Threshold" << i << "\n";
 			break;
 		}
 	}
@@ -111,6 +137,8 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 	LeftCenterY = LeftTotalY / LeftCenterSizeThreshold;
 	RightCenterX = RightTotalX / RightCenterSizeThreshold;
 	RightCenterY = RightTotalY / RightCenterSizeThreshold;
+
+	std::cout << "Left Center Point (" << LeftCenterX << ", " << LeftCenterY << ")\nRight Center Point (" << RightCenterX << ", " << RightCenterY << ")\n";
 
 	std::cout << "Step 5!\n";
 
@@ -182,14 +210,14 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 	features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[1].setX(RightEyeEndX + RightLeftX );
 	features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[1].setY(RightEyeEndY + RightUpY);
 
-	//Feature leftCenter(Feature::FEATURE_NOSTRIL_LEFT);
-	//leftCenter.addPoint(Point2D<double>(LeftCenterX, LeftCenterY));
+	Feature leftCenter(Feature::FEATURE_NOSTRIL_LEFT);
+	leftCenter.addPoint(Point2D<double>(LeftCenterX + LeftLeftX, LeftCenterY + LeftUpY));
 
-	//Feature rightCenter(Feature::FEATURE_NOSTRIL_RIGHT);
-	//rightCenter.addPoint(Point2D<double>(RightCenterX, RightCenterY));
+	Feature rightCenter(Feature::FEATURE_NOSTRIL_RIGHT);
+	rightCenter.addPoint(Point2D<double>(RightCenterX + RightLeftX, RightCenterY + RightUpY));
 
-	//features.putFeature(leftCenter);
-	//features.putFeature(rightCenter);
+	features.putFeature(leftCenter);
+	features.putFeature(rightCenter);
 
 	std::cout << "Doei!\n";
 
