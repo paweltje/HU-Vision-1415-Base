@@ -47,8 +47,8 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 
 	std::cout << "Step 2!\n";
 
-	int LeftEyeHistogram[255] = {0};
-	int RightEyeHistogram[255] = {0};
+	int LeftEyeHistogram[256] = {0};
+	int RightEyeHistogram[256] = {0};
 	
 	for (int i = 0; i < LeftSize; i++){
 		LeftEyeHistogram[LeftEyeGrayCopy->getPixel(i)] ++;
