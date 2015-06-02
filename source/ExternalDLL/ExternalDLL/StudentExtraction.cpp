@@ -4,6 +4,51 @@
 #include "ImageIO.h"
 
 bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap &features) const {
+	std::cout << "Step Pre!\n";
+
+	const int LeftLeftX = std::fmin(features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[0].getX(), features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[1].getX());
+	const int LeftRightX = std::fmax(features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[0].getX(), features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[1].getX());
+	const int LeftUpY = std::fmin(features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[0].getY(), features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[1].getY());
+	const int LeftDownY = std::fmax(features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[0].getY(), features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[1].getY());
+
+	const int RightLeftX = std::fmin(features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[0].getX(), features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[1].getX());
+	const int RightRightX = std::fmax(features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[0].getX(), features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[1].getX());
+	const int RightUpY = std::fmin(features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[0].getY(), features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[1].getY());
+	const int RightDownY = std::fmax(features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[0].getY(), features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[1].getY());
+
+	const int LeftWidth = LeftRightX - LeftLeftX;
+	const int LeftHeight = LeftDownY - LeftUpY;
+	const int LeftSize = LeftWidth * LeftHeight;
+	if(LeftSize == 0) {
+		return false;
+	}
+
+	const int RightWidth = RightRightX - RightLeftX;
+	const int RightHeight = RightDownY - RightUpY;
+	const int RightSize = RightWidth * RightHeight;
+	if(RightSize == 0) {
+		return false;
+	}
+
+	std::cout << "Step 1!\n";
+
+	IntensityImage * LeftEyeCopy = new IntensityImageStudent(LeftWidth, LeftHeight);
+	IntensityImage * RightEyeCopy = new IntensityImageStudent(RightWidth, RightHeight);
+
+	for(int x = LeftLeftX; x < LeftRightX; x++) {
+		for(int y = LeftUpY; y < LeftDownY; y++) {
+			LeftEyeCopy->setPixel(x - LeftLeftX, y - LeftUpY, image.getPixel(x, y));
+		}
+	}
+
+	for(int x = RightLeftX; x < RightRightX; x++) {
+		for(int y = RightUpY; y < RightDownY; y++) {
+			RightEyeCopy->setPixel(x - RightLeftX, y - RightUpY, image.getPixel(x, y));
+		}
+	}
+
+
+
 
 	//Old grayscale code
 	//std::cout << "Step Pre!\n";
