@@ -55,24 +55,24 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 
 	for(int x = 0; x < LeftWidth; x++) {
 		for(int y = 0; y < LeftHeight; y++) {
-			if(LeftEyeCopy->getPixel(x, y) == 0) {
+			if(LeftEyeCopy->getPixel(x, y) == 255) {
 				if(x > 0 && y > 0 && x < LeftWidth - 1 && y < LeftHeight - 1) {
-					LeftEyeSmall->setPixel(x - 1, y, 0);
-					LeftEyeSmall->setPixel(x, y - 1, 0);
-					LeftEyeSmall->setPixel(x + 1, y, 0);
-					LeftEyeSmall->setPixel(x, y + 1, 0);
+					LeftEyeSmall->setPixel(x - 1, y, 255);
+					LeftEyeSmall->setPixel(x, y - 1, 255);
+					LeftEyeSmall->setPixel(x + 1, y, 255);
+					LeftEyeSmall->setPixel(x, y + 1, 255);
 				} else {
 					if(x > 0) {
-						LeftEyeSmall->setPixel(x - 1, y, 0);
+						LeftEyeSmall->setPixel(x - 1, y, 255);
 					}
 					if(y > 0) {
-						LeftEyeSmall->setPixel(x, y - 1, 0);
+						LeftEyeSmall->setPixel(x, y - 1, 255);
 					}
 					if(x < LeftWidth - 1) {
-						LeftEyeSmall->setPixel(x + 1, y, 0);
+						LeftEyeSmall->setPixel(x + 1, y, 255);
 					}
 					if(y < LeftHeight - 1) {
-						LeftEyeSmall->setPixel(x, y + 1, 0);
+						LeftEyeSmall->setPixel(x, y + 1, 255);
 					}
 				}
 			}
@@ -81,29 +81,35 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 
 	for(int x = 0; x < RightWidth; x++) {
 		for(int y = 0; y < RightHeight; y++) {
-			if(RightEyeCopy->getPixel(x, y) == 0) {
+			if(RightEyeCopy->getPixel(x, y) == 255) {
 				if(x > 0 && y > 0 && x < RightWidth - 1 && y < RightHeight - 1) {
-					RightEyeSmall->setPixel(x - 1, y, 0);
-					RightEyeSmall->setPixel(x, y - 1, 0);
-					RightEyeSmall->setPixel(x + 1, y, 0);
-					RightEyeSmall->setPixel(x, y + 1, 0);
+					RightEyeSmall->setPixel(x - 1, y, 255);
+					RightEyeSmall->setPixel(x, y - 1, 255);
+					RightEyeSmall->setPixel(x + 1, y, 255);
+					RightEyeSmall->setPixel(x, y + 1, 255);
 				} else {
 					if(x > 0) {
-						RightEyeSmall->setPixel(x - 1, y, 0);
+						RightEyeSmall->setPixel(x - 1, y, 255);
 					}
 					if(y > 0) {
-						RightEyeSmall->setPixel(x, y - 1, 0);
+						RightEyeSmall->setPixel(x, y - 1, 255);
 					}
 					if(x < RightWidth - 1) {
-						RightEyeSmall->setPixel(x + 1, y, 0);
+						RightEyeSmall->setPixel(x + 1, y, 255);
 					}
 					if(y < RightHeight - 1) {
-						RightEyeSmall->setPixel(x, y + 1, 0);
+						RightEyeSmall->setPixel(x, y + 1, 255);
 					}
 				}
 			}
 		}
 	}
+
+	ImageIO::isInDebugMode = true;
+	ImageIO::saveIntensityImage(*LeftEyeSmall , "C:\\Users\\Wibren\\Desktop\\leftSmall.png");
+	ImageIO::saveIntensityImage(*RightEyeSmall, "C:\\Users\\Wibren\\Desktop\\rightSmall.png");
+	ImageIO::isInDebugMode = false;
+
 
 	delete LeftEyeCopy;
 	delete RightEyeCopy;
@@ -178,6 +184,127 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 	ImageIO::saveIntensityImage(*LeftEyeFinal, "C:\\Users\\Wibren\\Desktop\\left.png");
 	ImageIO::saveIntensityImage(*RightEyeFinal, "C:\\Users\\Wibren\\Desktop\\right.png");
 	ImageIO::isInDebugMode = false;
+
+	unsigned long int LeftTotalX = 0, LeftTotalY = 0, RightTotalX = 0, RightTotalY = 0, LeftBlackCount = 0, RightBlackCount = 0;
+
+	for(int x = 0; x < LeftWidth; x++) {
+		for(int y = 0; y < LeftHeight; y++) {
+			if(LeftEyeFinal->getPixel(x, y) == 0) {
+				LeftTotalX += x;
+				LeftTotalY += y;
+				LeftBlackCount++;
+			}
+		}
+	}
+
+	for(int x = 0; x < RightWidth; x++) {
+		for(int y = 0; y < RightHeight; y++) {
+			if(RightEyeFinal->getPixel(x, y) == 0) {
+				RightTotalX += x;
+				RightTotalY += y;
+				RightBlackCount++;
+			}
+		}
+	}
+
+	int LeftCenterX, LeftCenterY, RightCenterX, RightCenterY;
+	LeftCenterX = LeftTotalX / LeftBlackCount;
+	LeftCenterY = LeftTotalY / LeftBlackCount;
+	RightCenterX = RightTotalX / RightBlackCount;
+	RightCenterY = RightTotalY / RightBlackCount;
+
+	std::cout << "Left Center Point (" << LeftCenterX << ", " << LeftCenterY << ")\nRight Center Point (" << RightCenterX << ", " << RightCenterY << ")\n";
+
+	std::cout << "Step 5!\n";
+
+	int LeftEyeStartX = LeftCenterX,  LeftEyeEndX = LeftCenterX, LeftEyeStartY = LeftCenterY, LeftEyeEndY = LeftCenterY, RightEyeStartX = RightCenterX, RightEyeEndX = RightCenterX, RightEyeStartY = RightCenterY, RightEyeEndY = RightCenterY;
+	for (int x = LeftCenterX; x >= 0; x--){
+		if(LeftEyeFinal->getPixel(x, LeftCenterY) == 0) {
+			LeftEyeStartX = x;
+		} else {
+			break;
+		}
+	}
+	for (int x = LeftCenterX; x < LeftWidth; x++){
+		if(LeftEyeFinal->getPixel(x, LeftCenterY) == 0) {
+			LeftEyeEndX = x;
+		} else {
+			break;
+		}
+	}
+	for (int y = LeftCenterY; y >= 0; y--){
+		if(LeftEyeFinal->getPixel(LeftCenterX, y) == 0) {
+			LeftEyeStartY = y;
+		} else {
+			break;
+		}
+	}
+	for (int y = LeftCenterY; y < LeftHeight; y++){
+		if(LeftEyeFinal->getPixel(LeftCenterX, y) == 0) {
+			LeftEyeEndY = y;
+		} else {
+			break;
+		}
+	}
+
+	for (int x = RightCenterX; x >= 0; x--){
+		if(RightEyeFinal->getPixel(x, RightCenterY) == 0) {
+			RightEyeStartX = x;
+		} else {
+			break;
+		}
+	}
+	for (int x = RightCenterX; x < RightWidth; x++){
+		if(RightEyeFinal->getPixel(x, RightCenterY) == 0) {
+			RightEyeEndX = x;
+		} else {
+			break;
+		}
+	}
+	for (int y = RightCenterY; y >= 0; y--){
+		if(RightEyeFinal->getPixel(RightCenterX, y) == 0) {
+			RightEyeStartY = y;
+		} else {
+			break;
+		}
+	}
+	for (int y = RightCenterY; y < RightHeight; y++){
+		if(RightEyeFinal->getPixel(RightCenterX, y) == 0) {
+			RightEyeEndY = y;
+		} else {
+			break;
+		}
+	}
+
+	std::cout << "Values: ";
+	std::cout << "X:" << LeftEyeStartX << " to " << LeftEyeEndX <<'\n';
+	std::cout << "Y:" << LeftEyeStartY << " to " << LeftEyeEndY << '\n';
+	std::cout << "X:" << RightEyeStartX << " to " << RightEyeEndX << '\n';
+	std::cout << "Y:" << RightEyeStartY << " to " << RightEyeEndY << '\n';
+
+	std::cout << "Step Final!\n";
+
+	delete LeftEyeFinal;
+	delete RightEyeFinal;
+
+	features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[0].setX(LeftEyeStartX + LeftLeftX);
+	features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[0].setY(LeftEyeStartY + LeftUpY);
+	features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[1].setX(LeftEyeEndX + LeftLeftX);
+	features.getFeature(Feature::FEATURE_EYE_LEFT_RECT).getPoints()[1].setY(LeftEyeEndY + LeftUpY);
+
+	features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[0].setX(RightEyeStartX + RightLeftX);
+	features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[0].setY(RightEyeStartY + RightUpY);
+	features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[1].setX(RightEyeEndX + RightLeftX );
+	features.getFeature(Feature::FEATURE_EYE_RIGHT_RECT).getPoints()[1].setY(RightEyeEndY + RightUpY);
+
+	Feature leftCenter(Feature::FEATURE_NOSTRIL_LEFT);
+	leftCenter.addPoint(Point2D<double>(LeftCenterX + LeftLeftX, LeftCenterY + LeftUpY));
+
+	Feature rightCenter(Feature::FEATURE_NOSTRIL_RIGHT);
+	rightCenter.addPoint(Point2D<double>(RightCenterX + RightLeftX, RightCenterY + RightUpY));
+
+	features.putFeature(leftCenter);
+	features.putFeature(rightCenter);
 
 	return true;
 	//Old grayscale code
