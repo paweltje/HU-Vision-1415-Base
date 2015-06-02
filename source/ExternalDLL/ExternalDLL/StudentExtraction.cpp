@@ -30,8 +30,6 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 		return false;
 	}
 
-	std::cout << "Step 1!\n";
-
 	IntensityImage * LeftEyeCopy = new IntensityImageStudent(LeftWidth, LeftHeight);
 	IntensityImage * RightEyeCopy = new IntensityImageStudent(RightWidth, RightHeight);
 
@@ -105,17 +103,10 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 		}
 	}
 
-	ImageIO::isInDebugMode = true;
-	ImageIO::saveIntensityImage(*LeftEyeSmall , "C:\\Users\\Wibren\\Desktop\\leftSmall.png");
-	ImageIO::saveIntensityImage(*RightEyeSmall, "C:\\Users\\Wibren\\Desktop\\rightSmall.png");
-	ImageIO::isInDebugMode = false;
-
-
 	delete LeftEyeCopy;
 	delete RightEyeCopy;
 	LeftEyeCopy = nullptr;
 	RightEyeCopy = nullptr;
-
 
 	IntensityImageStudent * LeftEyeFinal = new IntensityImageStudent(LeftWidth, LeftHeight);
 	IntensityImageStudent * RightEyeFinal = new IntensityImageStudent(RightWidth, RightHeight);
@@ -180,11 +171,6 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 	LeftEyeSmall = nullptr;
 	RightEyeSmall = nullptr;
 
-	ImageIO::isInDebugMode = true;
-	ImageIO::saveIntensityImage(*LeftEyeFinal, "C:\\Users\\Wibren\\Desktop\\left.png");
-	ImageIO::saveIntensityImage(*RightEyeFinal, "C:\\Users\\Wibren\\Desktop\\right.png");
-	ImageIO::isInDebugMode = false;
-
 	unsigned long int LeftTotalX = 0, LeftTotalY = 0, RightTotalX = 0, RightTotalY = 0, LeftBlackCount = 0, RightBlackCount = 0;
 
 	for(int x = 0; x < LeftWidth; x++) {
@@ -212,10 +198,6 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 	LeftCenterY = LeftTotalY / LeftBlackCount;
 	RightCenterX = RightTotalX / RightBlackCount;
 	RightCenterY = RightTotalY / RightBlackCount;
-
-	std::cout << "Left Center Point (" << LeftCenterX << ", " << LeftCenterY << ")\nRight Center Point (" << RightCenterX << ", " << RightCenterY << ")\n";
-
-	std::cout << "Step 5!\n";
 
 	int LeftEyeStartX = LeftCenterX,  LeftEyeEndX = LeftCenterX, LeftEyeStartY = LeftCenterY, LeftEyeEndY = LeftCenterY, RightEyeStartX = RightCenterX, RightEyeEndX = RightCenterX, RightEyeStartY = RightCenterY, RightEyeEndY = RightCenterY;
 	bool LeftWait = LeftEyeFinal->getPixel(LeftCenterX, LeftCenterY) == 255;
@@ -295,14 +277,6 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 		}
 	}
 
-	std::cout << "Values: ";
-	std::cout << "X:" << LeftEyeStartX << " to " << LeftEyeEndX <<'\n';
-	std::cout << "Y:" << LeftEyeStartY << " to " << LeftEyeEndY << '\n';
-	std::cout << "X:" << RightEyeStartX << " to " << RightEyeEndX << '\n';
-	std::cout << "Y:" << RightEyeStartY << " to " << RightEyeEndY << '\n';
-
-	std::cout << "Step Final!\n";
-
 	delete LeftEyeFinal;
 	delete RightEyeFinal;
 
@@ -322,14 +296,11 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 	Feature rightCenter(Feature::FEATURE_NOSTRIL_RIGHT);
 	rightCenter.addPoint(Point2D<double>(RightCenterX + RightLeftX, RightCenterY + RightUpY));
 
-	features.putFeature(leftCenter);
-	features.putFeature(rightCenter);
-
 	return true;
 }
 
 bool StudentExtraction::stepExtractNose(const IntensityImage &image, FeatureMap &features) const {
-	return true;
+	return false;
 }
 
 bool StudentExtraction::stepExtractMouth(const IntensityImage &image, FeatureMap &features) const {
