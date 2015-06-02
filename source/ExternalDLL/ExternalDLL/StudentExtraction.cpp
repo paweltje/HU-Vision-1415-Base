@@ -47,9 +47,139 @@ bool StudentExtraction::stepExtractEyes(const IntensityImage &image, FeatureMap 
 		}
 	}
 
+	IntensityImageStudent * LeftEyeSmall = new IntensityImageStudent(LeftWidth, LeftHeight);
+	IntensityImageStudent * RightEyeSmall = new IntensityImageStudent(RightWidth, RightHeight);
+
+	LeftEyeSmall->set(*LeftEyeCopy);
+	RightEyeSmall->set(*RightEyeCopy);
+
+	for(int x = 0; x < LeftWidth; x++) {
+		for(int y = 0; y < LeftHeight; y++) {
+			if(LeftEyeCopy->getPixel(x, y) == 0) {
+				if(x > 0 && y > 0 && x < LeftWidth - 1 && y < LeftHeight - 1) {
+					LeftEyeSmall->setPixel(x - 1, y, 0);
+					LeftEyeSmall->setPixel(x, y - 1, 0);
+					LeftEyeSmall->setPixel(x + 1, y, 0);
+					LeftEyeSmall->setPixel(x, y + 1, 0);
+				} else {
+					if(x > 0) {
+						LeftEyeSmall->setPixel(x - 1, y, 0);
+					}
+					if(y > 0) {
+						LeftEyeSmall->setPixel(x, y - 1, 0);
+					}
+					if(x < LeftWidth - 1) {
+						LeftEyeSmall->setPixel(x + 1, y, 0);
+					}
+					if(y < LeftHeight - 1) {
+						LeftEyeSmall->setPixel(x, y + 1, 0);
+					}
+				}
+			}
+		}
+	}
+
+	for(int x = 0; x < RightWidth; x++) {
+		for(int y = 0; y < RightHeight; y++) {
+			if(RightEyeCopy->getPixel(x, y) == 0) {
+				if(x > 0 && y > 0 && x < RightWidth - 1 && y < RightHeight - 1) {
+					RightEyeSmall->setPixel(x - 1, y, 0);
+					RightEyeSmall->setPixel(x, y - 1, 0);
+					RightEyeSmall->setPixel(x + 1, y, 0);
+					RightEyeSmall->setPixel(x, y + 1, 0);
+				} else {
+					if(x > 0) {
+						RightEyeSmall->setPixel(x - 1, y, 0);
+					}
+					if(y > 0) {
+						RightEyeSmall->setPixel(x, y - 1, 0);
+					}
+					if(x < RightWidth - 1) {
+						RightEyeSmall->setPixel(x + 1, y, 0);
+					}
+					if(y < RightHeight - 1) {
+						RightEyeSmall->setPixel(x, y + 1, 0);
+					}
+				}
+			}
+		}
+	}
+
+	delete LeftEyeCopy;
+	delete RightEyeCopy;
+	LeftEyeCopy = nullptr;
+	RightEyeCopy = nullptr;
 
 
+	IntensityImageStudent * LeftEyeFinal = new IntensityImageStudent(LeftWidth, LeftHeight);
+	IntensityImageStudent * RightEyeFinal = new IntensityImageStudent(RightWidth, RightHeight);
 
+	LeftEyeFinal->set(*LeftEyeSmall);
+	RightEyeFinal->set(*RightEyeSmall);
+
+	for(int x = 0; x < LeftWidth; x++) {
+		for(int y = 0; y < LeftHeight; y++) {
+			if(LeftEyeSmall->getPixel(x, y) == 0) {
+				if(x > 0 && y > 0 && x < LeftWidth -1 && y < LeftHeight - 1) {
+					LeftEyeFinal->setPixel(x - 1, y, 0);
+					LeftEyeFinal->setPixel(x, y - 1, 0);
+					LeftEyeFinal->setPixel(x + 1, y, 0);
+					LeftEyeFinal->setPixel(x, y + 1, 0);
+				} else {
+					if(x > 0) {
+						LeftEyeFinal->setPixel(x - 1, y, 0);
+					}
+					if(y > 0) {
+						LeftEyeFinal->setPixel(x, y - 1, 0);
+					}
+					if(x < LeftWidth - 1) {
+						LeftEyeFinal->setPixel(x + 1, y, 0);
+					}
+					if(y < LeftHeight - 1) {
+						LeftEyeFinal->setPixel(x, y + 1, 0);
+					}
+				}
+			}
+		}
+	}
+
+	for(int x = 0; x < RightWidth; x++) {
+		for(int y = 0; y < RightHeight; y++) {
+			if(RightEyeSmall->getPixel(x, y) == 0) {
+				if(x > 0 && y > 0 && x < RightWidth - 1 && y < RightHeight - 1) {
+					RightEyeFinal->setPixel(x - 1, y, 0);
+					RightEyeFinal->setPixel(x, y - 1, 0);
+					RightEyeFinal->setPixel(x + 1, y, 0);
+					RightEyeFinal->setPixel(x, y + 1, 0);
+				} else {
+					if(x > 0) {
+						RightEyeFinal->setPixel(x - 1, y, 0);
+					}
+					if(y > 0) {
+						RightEyeFinal->setPixel(x, y - 1, 0);
+					}
+					if(x < RightWidth - 1) {
+						RightEyeFinal->setPixel(x + 1, y, 0);
+					}
+					if(y < RightHeight - 1) {
+						RightEyeFinal->setPixel(x, y + 1, 0);
+					}
+				}
+			}
+		}
+	}
+
+	delete LeftEyeSmall;
+	delete RightEyeSmall;
+	LeftEyeSmall = nullptr;
+	RightEyeSmall = nullptr;
+
+	ImageIO::isInDebugMode = true;
+	ImageIO::saveIntensityImage(*LeftEyeFinal, "C:\\Users\\Wibren\\Desktop\\left.png");
+	ImageIO::saveIntensityImage(*RightEyeFinal, "C:\\Users\\Wibren\\Desktop\\right.png");
+	ImageIO::isInDebugMode = false;
+
+	return true;
 	//Old grayscale code
 	//std::cout << "Step Pre!\n";
 
